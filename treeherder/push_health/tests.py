@@ -5,7 +5,6 @@ import re
 from collections import defaultdict
 
 from django.core.cache import cache
-from django.db.models import Q
 
 from treeherder.model.models import FailureLine, Job, OptionCollection
 from treeherder.push_health.classification import get_grouped, set_classifications
