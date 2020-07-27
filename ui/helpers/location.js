@@ -6,14 +6,15 @@ import {
   uiJobsUrlBase,
 } from './url';
 
+// TODO remove
 export const getQueryString = function getQueryString() {
   return extractSearchString(window.location.href);
 };
-
+// TODO remove
 export const getAllUrlParams = function getAllUrlParams() {
   return new URLSearchParams(getQueryString());
 };
-
+// TODO remove
 export const getUrlParam = function getUrlParam(name) {
   return getAllUrlParams().get(name);
 };

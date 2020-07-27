@@ -10,6 +10,7 @@ export const tcClientIdMap = {
   'https://treeherder-prototype2.herokuapp.com': 'dev2',
 };
 
+// TODO update clients to include -client and add localhost 5000 and 8000.
 export const clientId = `treeherder-${tcClientIdMap[window.location.origin]}`;
 
 export const redirectURI = `${window.location.origin}${tcAuthCallbackUrl}`;

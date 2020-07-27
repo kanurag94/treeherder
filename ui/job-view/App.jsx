@@ -9,7 +9,7 @@ import ShortcutTable from '../shared/ShortcutTable';
 import { matchesDefaults } from '../helpers/filter';
 import { getAllUrlParams, getRepo } from '../helpers/location';
 import { MAX_TRANSIENT_AGE } from '../helpers/notifications';
-import { deployedRevisionUrl } from '../helpers/url';
+import { deployedRevisionUrl, parseQueryParams } from '../helpers/url';
 import ClassificationTypeModel from '../models/classificationType';
 import FilterModel from '../models/filter';
 import RepositoryModel from '../models/repository';
@@ -116,7 +116,7 @@ class App extends React.Component {
 
     window.addEventListener('resize', this.updateDimensions, false);
     window.addEventListener('storage', this.handleStorageEvent);
-    window.addEventListener(thEvents.filtersUpdated, this.handleFiltersUpdated);
+    // window.addEventListener(thEvents.filtersUpdated, this.handleFiltersUpdated);
 
     // Get the current Treeherder revision and poll to notify on updates.
     this.fetchDeployedRevision().then((revision) => {
@@ -168,7 +168,6 @@ class App extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions, false);
-    window.removeEventListener('storage', this.handleUrlChanges, false);
 
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
@@ -239,27 +238,36 @@ class App extends React.Component {
   };
 
   handleUrlChanges = () => {
-    const { repos } = this.state;
+    const { repos, currentRepo } = this.state;
     const { location, history } = this.props;
 
-    const urlParams = getAllUrlParams();
-    const newRepo = urlParams.get('repo');
+    const {
+      selectedJob,
+      selectedTaskRun,
+      group_state: groupState,
+      duplicate_jobs: duplicateJobs,
+      repo: newRepo,
+    } = parseQueryParams(location.search);
 
+    const newFullRepo = newRepo
+      ? repos.find((repo) => repo.name === newRepo)
+      : currentRepo;
+    // causes an infinite reloading loop
     const newState = {
-      hasSelectedJob:
-        urlParams.has('selectedJob') || urlParams.has('selectedTaskRun'),
-      groupCountsExpanded: urlParams.get('group_state') === 'expanded',
-      duplicateJobsVisible: urlParams.get('duplicate_jobs') === 'visible',
-      currentRepo: repos.find((repo) => repo.name === newRepo),
+      hasSelectedJob: selectedJob || selectedTaskRun,
+      groupCountsExpanded: groupState === 'expanded',
+      duplicateJobsVisible: duplicateJobs === 'visible',
+      currentRepo: newFullRepo,
     };
 
-    this.setState({
-      filterModel: new FilterModel(history, location),
-      [newState]: newState,
-    });
+    // this.setState({
+    //   filterModel: new FilterModel(history, location),
+    //   [newState]: newState,
+    // });
   };
 
   handleFiltersUpdated = () => {
+    console.log('handle filters updated');
     this.setState({ filterModel: new FilterModel() });
   };
 
@@ -382,6 +390,7 @@ class App extends React.Component {
                         groupCountsExpanded={groupCountsExpanded}
                         pushHealthVisibility={pushHealthVisibility}
                         getAllShownJobs={this.getAllShownJobs}
+                        {...this.props}
                       />
                     </span>
                   </div>

@@ -46,7 +46,7 @@ class SecondaryNavBar extends React.PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener('hashchange', this.handleUrlChanges, false);
+    // window.addEventListener('hashchange', this.handleUrlChanges, false);
     this.loadWatchedRepos();
   }
 
