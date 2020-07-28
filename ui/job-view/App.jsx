@@ -365,6 +365,7 @@ class App extends React.Component {
               toggleFieldFilterVisible={this.toggleFieldFilterVisible}
               pushHealthVisibility={pushHealthVisibility}
               setPushHealthVisibility={this.setPushHealthVisibility}
+              {...this.props}
             />
             <SplitPane
               split="horizontal"

@@ -228,6 +228,7 @@ class SecondaryNavBar extends React.PureComponent {
                   repoName={repoName}
                   unwatchRepo={this.unwatchRepo}
                   setCurrentRepoTreeStatus={setCurrentRepoTreeStatus}
+                  {...this.props}
                 />
               </ErrorBoundary>
             ))}
