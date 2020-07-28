@@ -2,6 +2,8 @@ import React from 'react';
 import { Modal } from 'reactstrap';
 import { hot } from 'react-hot-loader/root';
 import SplitPane from 'react-split-pane';
+import pick from 'lodash/pick';
+import isEqual from 'lodash/isEqual';
 import { Provider } from 'react-redux';
 
 import { thFavicons, thEvents } from '../helpers/constants';
@@ -116,7 +118,7 @@ class App extends React.Component {
 
     window.addEventListener('resize', this.updateDimensions, false);
     window.addEventListener('storage', this.handleStorageEvent);
-    // window.addEventListener(thEvents.filtersUpdated, this.handleFiltersUpdated);
+    window.addEventListener(thEvents.filtersUpdated, this.handleFiltersUpdated);
 
     // Get the current Treeherder revision and poll to notify on updates.
     this.fetchDeployedRevision().then((revision) => {
@@ -168,6 +170,11 @@ class App extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions, false);
+    window.removeEventListener('storage', this.handleStorageEvent);
+    window.removeEventListener(
+      thEvents.filtersUpdated,
+      this.handleFiltersUpdated,
+    );
 
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
@@ -238,7 +245,7 @@ class App extends React.Component {
   };
 
   handleUrlChanges = () => {
-    const { repos, currentRepo } = this.state;
+    const { repos } = this.state;
     const { location, history } = this.props;
 
     const {
@@ -249,26 +256,26 @@ class App extends React.Component {
       repo: newRepo,
     } = parseQueryParams(location.search);
 
-    const newFullRepo = newRepo
-      ? repos.find((repo) => repo.name === newRepo)
-      : currentRepo;
-    // causes an infinite reloading loop
     const newState = {
       hasSelectedJob: selectedJob || selectedTaskRun,
       groupCountsExpanded: groupState === 'expanded',
       duplicateJobsVisible: duplicateJobs === 'visible',
-      currentRepo: newFullRepo,
+      currentRepo: repos.find((repo) => repo.name === newRepo),
     };
 
-    // this.setState({
-    //   filterModel: new FilterModel(history, location),
-    //   [newState]: newState,
-    // });
+    const oldState = pick(this.state, Object.keys(newState));
+    let stateChanges = { filterModel: new FilterModel(history, location) };
+
+    if (!isEqual(newState, oldState)) {
+      stateChanges = { ...stateChanges, ...newState };
+    }
+
+    this.setState(stateChanges);
   };
 
   handleFiltersUpdated = () => {
-    console.log('handle filters updated');
-    this.setState({ filterModel: new FilterModel() });
+    const { history, location } = this.props;
+    this.setState({ filterModel: new FilterModel(history, location) });
   };
 
   // If ``show`` is a boolean, then set to that value.  If it's not, then toggle

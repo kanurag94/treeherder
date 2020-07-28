@@ -51,7 +51,7 @@ class PushList extends React.Component {
     if (jobsLoaded && jobsLoaded !== prevProps.jobsLoaded) {
       setSelectedJobFromQueryString(notify, jobMap);
     }
-    // this.handleUrlChanges(prevProps);
+    this.handleUrlChanges(prevProps);
   }
 
   componentWillUnmount() {
