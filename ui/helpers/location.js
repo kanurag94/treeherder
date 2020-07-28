@@ -26,11 +26,7 @@ export const replaceLocation = function replaceLocation(
   params,
   route = '/jobs',
 ) {
-  window.history.replaceState(
-    null,
-    null,
-    `${window.location.pathname}${route}${createQueryParams(params)}`,
-  );
+  window.history.pushState(null, null, `${route}${createQueryParams(params)}`);
 };
 
 export const setUrlParam = function setUrlParam(field, value, route = '/jobs') {
