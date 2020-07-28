@@ -67,7 +67,7 @@ class App extends React.Component {
       this.props.location,
     );
     // Set the URL to updated parameter styles, if needed.  Otherwise it's a no-op.
-    filterModel.push();
+    // filterModel.push();
     const urlParams = getAllUrlParams();
     const hasSelectedJob =
       urlParams.has('selectedJob') || urlParams.has('selectedTaskRun');

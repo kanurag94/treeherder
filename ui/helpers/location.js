@@ -6,15 +6,14 @@ import {
   uiJobsUrlBase,
 } from './url';
 
-// TODO remove
 export const getQueryString = function getQueryString() {
   return extractSearchString(window.location.href);
 };
-// TODO remove
+
 export const getAllUrlParams = function getAllUrlParams() {
   return new URLSearchParams(getQueryString());
 };
-// TODO remove
+
 export const getUrlParam = function getUrlParam(name) {
   return getAllUrlParams().get(name);
 };
@@ -23,12 +22,6 @@ export const getRepo = function getRepo() {
   return getUrlParam('repo') || thDefaultRepo;
 };
 
-// TODO these all were used to update the hash - are they needed?
-export const setLocation = function setLocation(params, route = '/jobs') {
-  window.location = `${route}${createQueryParams(params)}`;
-};
-
-// change the url hash without firing a ``hashchange`` event.
 export const replaceLocation = function replaceLocation(
   params,
   route = '/jobs',
@@ -48,7 +41,8 @@ export const setUrlParam = function setUrlParam(field, value, route = '/jobs') {
   } else {
     params.delete(field);
   }
-  setLocation(params, route);
+
+  replaceLocation(params, route);
 };
 
 export const getRepoUrl = function getRepoUrl(newRepoName) {
