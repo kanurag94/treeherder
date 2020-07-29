@@ -33,8 +33,7 @@ const App = () => {
           path="/taskcluster-auth"
           render={(props) => <TaskclusterCallback {...props} />}
         /> */}
-          <Route exact path="/jobs" component={JobsViewApp} />
-          {/* <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} /> */}
+          <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} />
 
           {/* entry: 'job-view/index.jsx',
         entry: 'index',
