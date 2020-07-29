@@ -160,6 +160,7 @@ class PushList extends React.Component {
                 isOnlyRevision={push.revision === revision}
                 pushHealthVisibility={pushHealthVisibility}
                 getAllShownJobs={getAllShownJobs}
+                {...this.props}
               />
             </ErrorBoundary>
           ))}

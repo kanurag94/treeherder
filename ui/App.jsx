@@ -33,8 +33,8 @@ const App = () => {
           path="/taskcluster-auth"
           render={(props) => <TaskclusterCallback {...props} />}
         /> */}
-          {/* TODO add redirect from / and add query param support */}
-          <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} />
+          <Route exact path="/jobs" component={JobsViewApp} />
+          {/* <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} /> */}
 
           {/* entry: 'job-view/index.jsx',
         entry: 'index',
@@ -73,7 +73,7 @@ const App = () => {
             from="/intermittent-failures.html"
             to="/intermittent-failures"
           />
-          <Redirect from="/" to="/jobs" />
+          <Redirect from="/" to="/jobs?repo=autoland" />
         </Switch>
       </Suspense>
     </div>
