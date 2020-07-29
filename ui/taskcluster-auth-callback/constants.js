@@ -10,8 +10,9 @@ export const tcClientIdMap = {
   'https://treeherder-prototype2.herokuapp.com': 'dev2',
 };
 
-// TODO update clients to include -client and add localhost 5000 and 8000.
-export const clientId = `treeherder-${tcClientIdMap[window.location.origin]}`;
+export const clientId = `treeherder-${
+  tcClientIdMap[window.location.origin]
+}-client`;
 
 export const redirectURI = `${window.location.origin}${tcAuthCallbackUrl}`;
 
@@ -27,7 +28,7 @@ export const checkRootUrl = (rootUrl) => {
   // and the default login rootUrls are for https://firefox-ci-tc.services.mozilla.com
   if (
     rootUrl === prodFirefoxRootUrl &&
-    clientId === 'treeherder-taskcluster-staging'
+    clientId === 'treeherder-taskcluster-staging-client'
   ) {
     return stagingFirefoxRootUrl;
   }
