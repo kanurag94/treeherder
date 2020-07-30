@@ -105,6 +105,7 @@ export default class FilterModel {
     } else {
       delete this.urlParams[field];
     }
+
     this.push();
   };
 

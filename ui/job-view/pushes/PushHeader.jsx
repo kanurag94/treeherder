@@ -13,6 +13,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Badge, Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import { getPercentComplete, toDateStr } from '../../helpers/display';
 import { formatTaskclusterError } from '../../helpers/errorMessage';
@@ -244,13 +245,13 @@ class PushHeader extends React.Component {
                 title={`${collapsed ? 'Expand' : 'Collapse'} push data`}
               />
               <span>
-                <a href={revisionPushFilterUrl} title="View only this push">
+                <Link to={revisionPushFilterUrl} title="View only this push">
                   {this.pushDateStr}{' '}
                   <FontAwesomeIcon
                     icon={faExternalLinkAlt}
                     className="icon-superscript"
                   />
-                </a>{' '}
+                </Link>{' '}
                 -{' '}
               </span>
               <PushAuthor author={author} url={authorPushFilterUrl} />
