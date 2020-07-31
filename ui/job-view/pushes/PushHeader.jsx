@@ -332,6 +332,7 @@ class PushHeader extends React.Component {
               showRunnableJobs={showRunnableJobs}
               hideRunnableJobs={hideRunnableJobs}
               showFuzzyJobs={showFuzzyJobs}
+              {...this.props}
             />
           </span>
         </div>

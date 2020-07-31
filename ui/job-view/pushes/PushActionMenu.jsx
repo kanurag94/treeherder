@@ -37,6 +37,13 @@ class PushActionMenu extends React.PureComponent {
     window.addEventListener(thEvents.filtersUpdated, this.handleUrlChanges);
   }
 
+  componentDidUpdate(prevProps) {
+    console.log(this.props.location.search);
+    if (prevProps.location.search !== this.props.location.search) {
+      this.handleUrlChanges();
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('hashchange', this.handleUrlChanges, false);
     window.removeEventListener(thEvents.filtersUpdated, this.handleUrlChanges);

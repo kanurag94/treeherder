@@ -664,6 +664,7 @@ class Push extends React.PureComponent {
           groupCountsExpanded={groupCountsExpanded}
           pushHealthStatusCallback={this.pushHealthStatusCallback}
           togglePushCollapsed={this.togglePushCollapsed}
+          {...this.props}
         />
         <div className="push-body-divider" />
         {!collapsed ? (

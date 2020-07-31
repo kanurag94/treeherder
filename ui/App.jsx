@@ -52,27 +52,22 @@ const updateOldUrls = () => {
 const App = () => {
   updateOldUrls();
   return (
-    <div>
-      <Suspense fallback={<LoadingSpinner />}>
-        <Switch>
-          <Route
-            exact
-            path="/login"
-            render={(props) => <LoginCallback {...props} />}
-          />
-          <Route
-            exact
-            path="/taskcluster-auth"
-            render={(props) => <TaskclusterCallback {...props} />}
-          />
-          <Route
-            exact
-            path="/"
-            render={(props) => <JobsViewApp {...props} />}
-          />
-          <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} />
+    <Suspense fallback={<LoadingSpinner />}>
+      <Switch>
+        <Route
+          exact
+          path="/login"
+          render={(props) => <LoginCallback {...props} />}
+        />
+        <Route
+          exact
+          path="/taskcluster-auth"
+          render={(props) => <TaskclusterCallback {...props} />}
+        />
+        <Route exact path="/" render={(props) => <JobsViewApp {...props} />} />
+        <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} />
 
-          {/* 
+        {/* 
             logviewer: {
               entry: 'logviewer/index.jsx',
               favicon: 'ui/img/logviewerIcon.png',
@@ -91,17 +86,16 @@ const App = () => {
               title: 'Push Health',
               favicon: 'ui/img/push-health-ok.png',
               template: 'ui/index.html', */}
-          <Route
-            path="/intermittent-failures"
-            render={(props) => <IntermittentFailuresApp {...props} />}
-          />
-          <Route
-            path="/perfherder"
-            render={(props) => <PerfherderApp {...props} />}
-          />
-        </Switch>
-      </Suspense>
-    </div>
+        <Route
+          path="/intermittent-failures"
+          render={(props) => <IntermittentFailuresApp {...props} />}
+        />
+        <Route
+          path="/perfherder"
+          render={(props) => <PerfherderApp {...props} />}
+        />
+      </Switch>
+    </Suspense>
   );
 };
 
