@@ -348,7 +348,7 @@ PushHeader.propTypes = {
   pushId: PropTypes.number.isRequired,
   pushTimestamp: PropTypes.number.isRequired,
   author: PropTypes.string.isRequired,
-  revision: PropTypes.string.isRequired,
+  revision: PropTypes.string,
   filterModel: PropTypes.shape({}).isRequired,
   runnableVisible: PropTypes.bool.isRequired,
   showRunnableJobs: PropTypes.func.isRequired,
@@ -374,6 +374,7 @@ PushHeader.propTypes = {
 PushHeader.defaultProps = {
   watchState: 'none',
   pushHealthStatusCallback: null,
+  revision: null,
 };
 
 const mapStateToProps = ({ pushes: { decisionTaskMap } }) => ({

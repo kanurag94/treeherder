@@ -22,18 +22,11 @@ export const getRepo = function getRepo() {
   return getUrlParam('repo') || thDefaultRepo;
 };
 
-export const replaceLocation = function replaceLocation(
-  params,
-  route = '/jobs',
-) {
-  window.history.replaceState(
-    null,
-    null,
-    `${route}${createQueryParams(params)}`,
-  );
+export const replaceLocation = function replaceLocation(params) {
+  window.history.pushState(null, null, createQueryParams(params));
 };
 
-export const setUrlParam = function setUrlParam(field, value, route = '/jobs') {
+export const setUrlParam = function setUrlParam(field, value) {
   const params = getAllUrlParams();
 
   if (value) {
@@ -42,7 +35,7 @@ export const setUrlParam = function setUrlParam(field, value, route = '/jobs') {
     params.delete(field);
   }
 
-  replaceLocation(params, route);
+  replaceLocation(params);
 };
 
 export const getRepoUrl = function getRepoUrl(newRepoName) {

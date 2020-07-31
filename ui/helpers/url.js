@@ -161,5 +161,5 @@ export const updateQueryParams = function updateHistoryWithQueryParams(
   history,
   location,
 ) {
-  history.replace({ pathname: location.pathname, search: queryParams });
+  history.push({ pathname: location.pathname, search: queryParams });
 };

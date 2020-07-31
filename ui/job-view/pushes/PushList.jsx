@@ -11,13 +11,9 @@ import {
   clearSelectedJob,
   setSelectedJobFromQueryString,
 } from '../redux/stores/selectedJob';
-import {
-  fetchPushes,
-  fetchNextPushes,
-  updateRange,
-  pollPushes,
-} from '../redux/stores/pushes';
-import { reloadOnChangeParameters } from '../../helpers/filter';
+import { fetchPushes, updateRange, pollPushes } from '../redux/stores/pushes';
+import { getAllUrlParams } from '../../helpers/location';
+import { updateQueryParams } from '../../helpers/url';
 
 import Push from './Push';
 import PushLoadErrors from './PushLoadErrors';
@@ -71,11 +67,43 @@ class PushList extends React.Component {
     const params = [...new URLSearchParams(search)];
 
     return params.reduce((acc, [key, value]) => {
-      return reloadOnChangeParameters.includes(key)
+      return [
+        'repo',
+        'revision',
+        'author',
+        'startdate',
+        'enddate',
+        'nojobs',
+      ].includes(key)
         ? { ...acc, [key]: value }
         : acc;
     }, {});
   };
+
+  getNextPushes(count) {
+    const { history, location, fetchPushes, pushList } = this.props;
+    const params = getAllUrlParams();
+
+    if (params.has('revision')) {
+      // We are viewing a single revision, but the user has asked for more.
+      // So we must replace the ``revision`` param with ``tochange``, which
+      // will make it just the top of the range.  We will also then get a new
+      // ``fromchange`` param after the fetch.
+      const revision = params.get('revision');
+      params.delete('revision');
+      params.set('tochange', revision);
+    } else if (params.has('startdate')) {
+      // We are fetching more pushes, so we don't want to limit ourselves by
+      // ``startdate``.  And after the fetch, ``startdate`` will be invalid,
+      // and will be replaced on the location bar by ``fromchange``.
+      params.delete('startdate');
+    } else {
+      params.set('fromchange', pushList[pushList.length - 1].revision);
+    }
+
+    updateQueryParams(params.toString(), history, location);
+    fetchPushes(count, true);
+  }
 
   poll = () => {
     const { pollPushes } = this.props;
@@ -121,7 +149,6 @@ class PushList extends React.Component {
       filterModel,
       pushList,
       loadingPushes,
-      fetchNextPushes,
       getAllShownJobs,
       jobsLoaded,
       duplicateJobsVisible,
@@ -133,6 +160,7 @@ class PushList extends React.Component {
     if (!revision) {
       this.setWindowTitle();
     }
+
     return (
       // Bug 1619873 - role="list" works better here than an interactive role
       /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -187,7 +215,7 @@ class PushList extends React.Component {
                 color="darker-secondary"
                 outline
                 className="btn-light-bordered"
-                onClick={() => fetchNextPushes(count)}
+                onClick={() => this.getNextPushes(count)}
                 key={count}
                 data-testid={`get-next-${count}`}
               >
@@ -205,7 +233,6 @@ PushList.propTypes = {
   repoName: PropTypes.string.isRequired,
   filterModel: PropTypes.shape({}).isRequired,
   pushList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  fetchNextPushes: PropTypes.func.isRequired,
   fetchPushes: PropTypes.func.isRequired,
   pollPushes: PropTypes.func.isRequired,
   updateRange: PropTypes.func.isRequired,
@@ -252,7 +279,6 @@ export default connect(mapStateToProps, {
   notify,
   clearSelectedJob,
   setSelectedJobFromQueryString,
-  fetchNextPushes,
   fetchPushes,
   updateRange,
   pollPushes,

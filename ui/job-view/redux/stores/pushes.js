@@ -146,18 +146,6 @@ const addPushes = (
 
     if (dispatch) getBugSummaryMap(bugIds, dispatch, oldBugSummaryMap);
 
-    // since we fetched more pushes, we need to persist the push state in the URL.
-    const updatedLastRevision = newPushList[newPushList.length - 1].revision;
-
-    if (setFromchange && getUrlParam('fromchange') !== updatedLastRevision) {
-      const params = getAllUrlParams();
-      params.set('fromchange', updatedLastRevision);
-      replaceLocation(params);
-      // We are silently updating the url params, but we still want to
-      // update the ActiveFilters bar to this new change.
-      window.dispatchEvent(new CustomEvent(thEvents.filtersUpdated));
-    }
-
     return newStuff;
   }
   return {};

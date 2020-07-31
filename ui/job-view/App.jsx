@@ -275,6 +275,7 @@ class App extends React.Component {
 
   handleFiltersUpdated = () => {
     const { history, location } = this.props;
+
     this.setState({ filterModel: new FilterModel(history, location) });
   };
 
