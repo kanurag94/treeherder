@@ -5,9 +5,7 @@ jobs:
   include:
     # Run JS tests
     - language: node_js
-      node_js:
-        - 'lts/*'
-        - 'node'
+      node_js: 'lts/*'
       cache: yarn
       before_install:
         # Try to keep version in sync with `package.json`
