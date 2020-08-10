@@ -53,8 +53,8 @@ jobs:
         - pip install codecov
       script:
         - tox
-        - find . -name coverage.xml
-        - codecov -f coverage.xml
+        # It will fail if there's no coverage data
+        - codecov --required -f coverage.xml
         - tox -e docs
 
     # Run Python tests inside of the Docker containers
