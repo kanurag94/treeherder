@@ -53,6 +53,7 @@ jobs:
         - pip install codecov
       script:
         - tox
+        - find . -name coverage.xml
         - codecov -f coverage.xml
         - tox -e docs
 
