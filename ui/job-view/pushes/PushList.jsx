@@ -11,7 +11,12 @@ import {
   clearSelectedJob,
   setSelectedJobFromQueryString,
 } from '../redux/stores/selectedJob';
-import { fetchPushes, updateRange, pollPushes } from '../redux/stores/pushes';
+import {
+  fetchPushes,
+  fetchNextPushes,
+  updateRange,
+  pollPushes,
+} from '../redux/stores/pushes';
 import { getAllUrlParams } from '../../helpers/location';
 import { updateQueryParams } from '../../helpers/url';
 
@@ -80,31 +85,6 @@ class PushList extends React.Component {
     }, {});
   };
 
-  getNextPushes(count) {
-    const { history, location, fetchPushes, pushList } = this.props;
-    const params = getAllUrlParams();
-
-    if (params.has('revision')) {
-      // We are viewing a single revision, but the user has asked for more.
-      // So we must replace the ``revision`` param with ``tochange``, which
-      // will make it just the top of the range.  We will also then get a new
-      // ``fromchange`` param after the fetch.
-      const revision = params.get('revision');
-      params.delete('revision');
-      params.set('tochange', revision);
-    } else if (params.has('startdate')) {
-      // We are fetching more pushes, so we don't want to limit ourselves by
-      // ``startdate``.  And after the fetch, ``startdate`` will be invalid,
-      // and will be replaced on the location bar by ``fromchange``.
-      params.delete('startdate');
-    } else {
-      params.set('fromchange', pushList[pushList.length - 1].revision);
-    }
-
-    updateQueryParams(params.toString(), history, location);
-    fetchPushes(count, true);
-  }
-
   poll = () => {
     const { pollPushes } = this.props;
 
@@ -119,6 +99,7 @@ class PushList extends React.Component {
     const newRange = this.getUrlRangeValues(location.search);
 
     if (!isEqual(oldRange, newRange)) {
+      console.log('handleUrlChanges');
       updateRange(newRange);
     }
   };
@@ -154,6 +135,8 @@ class PushList extends React.Component {
       duplicateJobsVisible,
       groupCountsExpanded,
       pushHealthVisibility,
+      history,
+      fetchNextPushes,
     } = this.props;
     const { notificationSupported } = this.state;
 
@@ -215,7 +198,7 @@ class PushList extends React.Component {
                 color="darker-secondary"
                 outline
                 className="btn-light-bordered"
-                onClick={() => this.getNextPushes(count)}
+                onClick={() => fetchNextPushes(count, history, pushList)}
                 key={count}
                 data-testid={`get-next-${count}`}
               >
@@ -233,6 +216,7 @@ PushList.propTypes = {
   repoName: PropTypes.string.isRequired,
   filterModel: PropTypes.shape({}).isRequired,
   pushList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  fetchNextPushes: PropTypes.func.isRequired,
   fetchPushes: PropTypes.func.isRequired,
   pollPushes: PropTypes.func.isRequired,
   updateRange: PropTypes.func.isRequired,
@@ -279,6 +263,7 @@ export default connect(mapStateToProps, {
   notify,
   clearSelectedJob,
   setSelectedJobFromQueryString,
+  fetchNextPushes,
   fetchPushes,
   updateRange,
   pollPushes,

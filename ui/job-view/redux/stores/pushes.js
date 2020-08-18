@@ -2,7 +2,11 @@ import pick from 'lodash/pick';
 import keyBy from 'lodash/keyBy';
 import max from 'lodash/max';
 
-import { parseQueryParams, bugzillaBugsApi } from '../../../helpers/url';
+import {
+  parseQueryParams,
+  bugzillaBugsApi,
+  createQueryParams,
+} from '../../../helpers/url';
 import {
   getAllUrlParams,
   getUrlParam,
@@ -144,6 +148,18 @@ const addPushes = (
     };
 
     if (dispatch) getBugSummaryMap(bugIds, dispatch, oldBugSummaryMap);
+
+    // since we fetched more pushes, we need to persist the push state in the URL.
+    const updatedLastRevision = newPushList[newPushList.length - 1].revision;
+
+    if (setFromchange && getUrlParam('fromchange') !== updatedLastRevision) {
+      const params = getAllUrlParams();
+      params.set('fromchange', updatedLastRevision);
+      replaceLocation(params);
+      // We are silently updating the url params, but we still want to
+      // update the ActiveFilters bar to this new change.
+      window.dispatchEvent(new CustomEvent(thEvents.filtersUpdated));
+    }
 
     return newStuff;
   }
@@ -332,7 +348,7 @@ export const pollPushes = () => {
 /**
  * Get the next batch of pushes based on our current offset.
  */
-export const fetchNextPushes = (count) => {
+export const fetchNextPushes = (count, history, pushList) => {
   const params = getAllUrlParams();
 
   if (params.has('revision')) {
@@ -348,8 +364,14 @@ export const fetchNextPushes = (count) => {
     // ``startdate``.  And after the fetch, ``startdate`` will be invalid,
     // and will be replaced on the location bar by ``fromchange``.
     params.delete('startdate');
+  } else {
+    params.set('fromchange', pushList[pushList.length - 1].revision);
   }
-  replaceLocation(params);
+
+  history.push({
+    search: createQueryParams(params),
+  });
+
   return fetchPushes(count, true);
 };
 
