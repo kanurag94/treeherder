@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import { thFavicons, thEvents } from '../helpers/constants';
 import ShortcutTable from '../shared/ShortcutTable';
 import { matchesDefaults } from '../helpers/filter';
-import { getAllUrlParams, getRepo } from '../helpers/location';
+import { getAllUrlParams, getOrSetRepo } from '../helpers/location';
 import { MAX_TRANSIENT_AGE } from '../helpers/notifications';
 import { deployedRevisionUrl, parseQueryParams } from '../helpers/url';
 import ClassificationTypeModel from '../models/classificationType';
@@ -73,7 +73,7 @@ class App extends React.Component {
       urlParams.has('selectedJob') || urlParams.has('selectedTaskRun');
 
     this.state = {
-      repoName: getRepo(),
+      repoName: getOrSetRepo(this.props.history),
       revision: urlParams.get('revision'),
       user: { isLoggedIn: false, isStaff: false },
       filterModel,
@@ -96,7 +96,6 @@ class App extends React.Component {
   static getDerivedStateFromProps(props, state) {
     return {
       ...App.getSplitterDimensions(state.hasSelectedJob),
-      repoName: getRepo(),
     };
   }
 

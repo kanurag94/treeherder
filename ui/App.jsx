@@ -1,5 +1,11 @@
 import React, { Suspense, lazy } from 'react';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import {
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+  Redirect,
+} from 'react-router-dom';
 import { hot } from 'react-hot-loader/root';
 
 import LoadingSpinner from './shared/LoadingSpinner';
@@ -64,7 +70,9 @@ const App = () => {
           path="/taskcluster-auth"
           render={(props) => <TaskclusterCallback {...props} />}
         />
-        <Route exact path="/" render={(props) => <JobsViewApp {...props} />} />
+        <Route exact path="/">
+          <Redirect to="/jobs" />
+        </Route>
         <Route path="/jobs" render={(props) => <JobsViewApp {...props} />} />
 
         {/* 
